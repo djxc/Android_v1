@@ -1,0 +1,15 @@
+<resources>
+    <string name="app_name">MyMap</string>
+    <string name="email">邮&#160;&#160;&#160;&#160;箱:</string>
+    <string name="password">密&#160;&#160;&#160;&#160;码:</string>
+    <string name="name">用户名:</string>
+    <string name="inputName">请输入用户名</string>
+    <string name="inputPassword">请输入密码</string>
+    <string name="inputPasswordAgain">请再一次输入密码</string>
+    <string name="inputEmail">请输入有效邮箱</string>
+    <string name="inputVCode">请输入邮箱验证码</string>
+    <string name="login">登陆</string>
+    <string name="register">注册</string>
+    <string name="back">返回</string>
+    <string name="edit">编辑</string>
+</resources>
