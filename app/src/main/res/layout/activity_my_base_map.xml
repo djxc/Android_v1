@@ -1,0 +1,68 @@
+<android.support.v4.widget.DrawerLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/drawer_layout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <com.esri.arcgisruntime.mapping.view.MapView
+            android:id="@+id/mapView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+        </com.esri.arcgisruntime.mapping.view.MapView>
+        <Button
+            android:id="@+id/json2Geomtry"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="20dp"
+            android:layout_marginTop="100dp"
+            android:layout_alignParentRight="true"
+            android:text="json"/>
+        <Button
+            android:id="@+id/mToolbar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="20dp"
+            android:layout_marginTop="160dp"
+            android:layout_alignParentRight="true"
+            android:text="工具栏"/>
+
+        <android.support.design.widget.FloatingActionButton
+            android:id="@+id/fab"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="50dp"
+            android:layout_marginRight="20dp"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentRight="true"
+            android:src="@android:drawable/ic_menu_my_calendar"
+            android:clickable="true"
+            app:backgroundTint="#3F51B5"
+            app:elevation="3dp"
+            app:pressedTranslationZ="6dp"
+            />
+        <include
+            layout="@layout/point_line_polygon_toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:visibility="gone"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            android:id="@+id/toolbarInclude" app:layout_constraintEnd_toEndOf="parent"/>
+
+    </RelativeLayout>
+    <!-- The navigation drawer -->
+    <ListView
+        android:id="@+id/navList"
+        android:layout_width="200dp"
+        android:layout_height="match_parent"
+        android:layout_gravity="start"
+        android:choiceMode="singleChoice"
+        android:background="@android:color/background_light"
+        android:divider="@color/colorDivider"
+        android:dividerHeight="1dp"/>
+</android.support.v4.widget.DrawerLayout>

@@ -38,6 +38,7 @@
         <activity android:name="com.dj.ListViewTest" />
         <activity android:name="com.dj.myView.RecyclerViewTest" />
         <activity android:name="com.dj.myChat.ChatRoom" />
+        <activity android:name="com.dj.djArcMap.map1" />
 
         <receiver
             android:name="com.dj.Broadcast.MyReceiver"
@@ -50,7 +51,8 @@
             </intent-filter>
         </receiver>
 
-        <activity android:name="com.dj.myChat.Email_test"></activity>
+        <activity android:name="com.dj.myChat.Email_test" />
+        <activity android:name="com.dj.djArcMap.myBaseMap"></activity>
     </application>
 
 </manifest>

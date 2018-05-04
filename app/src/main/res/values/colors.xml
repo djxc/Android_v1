@@ -5,4 +5,6 @@
     <color name="colorAccent">#FF4081</color>
     <color name="material_green">#33CC99</color>
     <color name="material_dark_green">#66CC66</color>
+    <color name="toolbar_background">#FF444444</color>
+    <color name="colorDivider">#BDBDBD</color>
 </resources>

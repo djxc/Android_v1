@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item
+        android:id="@+id/start"
+        android:icon="@mipmap/ic_menu"
+        android:title="@string/startButtonDescription"
+        app:showAsAction="ifRoom|withText"/>
+
+    <item
+            android:id="@+id/undo"
+            android:icon="@mipmap/ic_menu_undo"
+            android:title="@string/undoButtonDescription"
+            app:showAsAction="ifRoom|withText"/>
+    <item
+            android:id="@+id/redo"
+            android:icon="@mipmap/ic_menu_redo"
+            android:title="@string/redoButtonDescription"
+            app:showAsAction="ifRoom|withText"/>
+    <item
+            android:id="@+id/stop"
+            android:icon="@mipmap/ic_menu_stop"
+            android:title="@string/stopButtonDescription"
+            app:showAsAction="ifRoom|withText"/>
+
+    <item
+        android:id="@+id/query"
+        android:icon="@mipmap/ic_menu_stop"
+        android:title="@string/queryButtonDescription"
+        app:showAsAction="ifRoom|withText"/>
+
+    <item
+        android:id="@+id/addShapefile"
+        android:icon="@mipmap/ic_menu_stop"
+        android:title="@string/addShapefileButtonDescription"
+        app:showAsAction="ifRoom|withText"/>
+
+    <item
+        android:id="@+id/showLatLon"
+        android:icon="@mipmap/ic_menu_stop"
+        android:title="@string/showLatLon"
+        app:showAsAction="ifRoom|withText"/>
+
+    <item
+        android:id="@+id/selectFeature"
+        android:icon="@mipmap/ic_menu_stop"
+        android:title="@string/selectFeature"
+        app:showAsAction="ifRoom|withText"/>
+
+</menu>

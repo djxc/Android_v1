@@ -12,4 +12,33 @@
     <string name="register">注册</string>
     <string name="back">返回</string>
     <string name="edit">编辑</string>
+
+    <string name="pointButtonDescription">Draw new point</string>
+    <string name="polylineButtonDescription">Draw new polyline</string>
+    <string name="polygonButtonDescription">Draw new polygon</string>
+    <string name="freehandLineButtonDescription">Draw freehand line</string>
+    <string name="freehandPolyButtonDescription">Draw freehand polygon</string>
+    <string name="undoButtonDescription">Undo</string>
+    <string name="redoButtonDescription">Redo</string>
+    <string name="stopButtonDescription">Stop</string>
+    <string name="startButtonDescription">Start</string>
+    <string name="queryButtonDescription">Query</string>
+    <string name="addShapefileButtonDescription">addShapefile</string>
+    <string name="showLatLon">显示经纬度</string>
+    <string name="selectFeature">选择要素</string>
+
+    <string name="wildfire_feature_server">"http://sampleserver6.arcgisonline.com/arcgis/rest/services/Wildfire/FeatureServer/0"</string>
+    <string name="shapefile_path">/djData/Data/Public_Art.shp</string>
+
+    <string-array name="vector_tiled_types">
+        <item>Streets</item>
+        <item>Navigation Vector</item>
+        <item>Topographic</item>
+        <item>Topographic Vector</item>
+        <item>Gray Canvas</item>
+        <item>Gray Canvas Vector</item>
+    </string-array>
+    <string name="drawer_open">Open navigation drawer</string>
+    <string name="drawer_close">Close navigation drawer</string>
+
 </resources>

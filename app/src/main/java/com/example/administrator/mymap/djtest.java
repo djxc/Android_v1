@@ -28,12 +28,12 @@ import com.dj.DataOperator.OperateFile;
 import com.dj.DataOperator.SDCard;
 import com.dj.DataOperator.dao;
 import com.dj.ListViewTest;
+import com.dj.djArcMap.map1;
+import com.dj.djArcMap.myBaseMap;
 import com.dj.myChat.ChatRoom;
 import com.dj.myChat.Email_test;
 import com.dj.myView.RecyclerViewTest;
 import com.dj.tools.BaseActivity;
-
-import java.io.BufferedInputStream;
 
 public class djtest extends BaseActivity implements View.OnClickListener{
     final String TAG = "dj";
@@ -157,7 +157,7 @@ public class djtest extends BaseActivity implements View.OnClickListener{
                 break;
             case R.id.map:
                 String data = "GIS";
-                Intent intent = new Intent(activity, MainActivity.class);
+                Intent intent = new Intent(activity, map1.class);
                 intent.putExtra("data", data);
                 startActivity(intent);
                 break;
