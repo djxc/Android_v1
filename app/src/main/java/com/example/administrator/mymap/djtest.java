@@ -30,6 +30,8 @@ import com.dj.DataOperator.dao;
 import com.dj.ListViewTest;
 import com.dj.djArcMap.map1;
 import com.dj.djArcMap.myBaseMap;
+import com.dj.djArcMap.mySceneView;
+import com.dj.djtest.zhedie;
 import com.dj.myChat.ChatRoom;
 import com.dj.myChat.Email_test;
 import com.dj.myView.RecyclerViewTest;
@@ -52,6 +54,9 @@ public class djtest extends BaseActivity implements View.OnClickListener{
     private Button btn_readFile;
     private Button btn_createDB;
     private Button btn_query;
+    private Button btn_extendListView;
+    private Button btn_anthorMap;
+    private Button btn_3dMap;
     private IntentFilter intentFilter;
     private dj networkChangeReceiver;
     private StorageManager mStorageManager;
@@ -82,6 +87,15 @@ public class djtest extends BaseActivity implements View.OnClickListener{
         btn_createDB = (Button) findViewById(R.id.btn_createDB);
         btn_query = (Button) findViewById(R.id.btn_queryData);
         Button btn_email = (Button) findViewById(R.id.btn_email);
+        btn_extendListView = (Button) findViewById(R.id.btn_extendListView);
+        btn_anthorMap = (Button) findViewById(R.id.btn_anthorMap);
+        btn_3dMap = (Button) findViewById(R.id.btn_3DMap);
+
+        btn_3dMap.setOnClickListener(this);
+
+        btn_anthorMap.setOnClickListener(this);
+
+        btn_extendListView.setOnClickListener(this);
 
         btn_email.setOnClickListener(this);
 
@@ -144,6 +158,7 @@ public class djtest extends BaseActivity implements View.OnClickListener{
     public void onClick(View v) {
         String SDpath = getDatapath();
         String dbpath = SDpath + "mydb.db";
+        String data = "GIS";
         switch (v.getId()){
             case R.id.phone:
                 Intent call = new Intent(Intent.ACTION_DIAL);
@@ -156,10 +171,14 @@ public class djtest extends BaseActivity implements View.OnClickListener{
                 startActivity(browser);
                 break;
             case R.id.map:
-                String data = "GIS";
                 Intent intent = new Intent(activity, map1.class);
                 intent.putExtra("data", data);
                 startActivity(intent);
+                break;
+            case R.id.btn_anthorMap:
+                Intent intent1 = new Intent(activity, MainActivity.class);
+                intent1.putExtra("data", data);
+                startActivity(intent1);
                 break;
             case R.id.myDialog:
                myDialog("测试弹出对话框", "请选择yes或是no");
@@ -196,6 +215,12 @@ public class djtest extends BaseActivity implements View.OnClickListener{
                 break;
             case R.id.btn_email:
                 jumpto(Email_test.class);
+                break;
+            case R.id.btn_extendListView:
+                jumpto(zhedie.class);
+                break;
+            case R.id.btn_3DMap:
+                jumpto(mySceneView.class);
                 break;
         }
     }

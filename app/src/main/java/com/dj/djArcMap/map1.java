@@ -20,16 +20,23 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.MotionEvent;
+import android.view.SubMenu;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.ExpandableListView;
 import android.widget.ImageButton;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.dj.DataOperator.SDCard;
+import com.dj.djtest.MyAdapter;
+import com.dj.djtest.zhedie;
+import com.dj.myMenu.extendMenu;
+import com.dj.myMenu.menuAction;
 import com.esri.arcgisruntime.concurrent.ListenableFuture;
 import com.esri.arcgisruntime.data.Feature;
 import com.esri.arcgisruntime.data.FeatureQueryResult;
@@ -59,7 +66,9 @@ import com.example.administrator.mymap.R;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 
 
 /**
@@ -73,7 +82,6 @@ public class map1 extends AppCompatActivity implements View.OnClickListener{
     private Dialog dialog;
     private ArcGISMap map;
     private Geometry geometry;
-    private Callout mCallout;
 
     private ImageButton mPointButton;
     private ImageButton mMultiPointButton;
@@ -82,7 +90,6 @@ public class map1 extends AppCompatActivity implements View.OnClickListener{
     private ImageButton mFreehandLineButton;
     private ImageButton mFreehandPolygonButton;
     private Button myToolbar;
-    private Button showLatLon;
     private View editeToolbar;
     private Toolbar mToolbar;
     private MenuView.ItemView stopEdit;
@@ -97,13 +104,18 @@ public class map1 extends AppCompatActivity implements View.OnClickListener{
 
     private ActionBar actionBar;
     private ListView mDrawerList;
+    private LinearLayout my_drawer;
 
     private ActionBarDrawerToggle mDrawerToggle;
     private DrawerLayout mDrawerLayout;
     private String mActivityTitle;
     private String[] mNavigationDrawerItemTitles;
-    private boolean canSelect = false;
-    private boolean isShowLatLon = false;
+
+    private myMapViewAction mapViewAction;
+    private menuAction myMenu = null;
+    private myLayers djLayers = null;
+
+    private ExpandableListView mExpandableListView = null;
 
 
     @Override
@@ -117,7 +129,7 @@ public class map1 extends AppCompatActivity implements View.OnClickListener{
         String data = intent.getStringExtra("data");
         Toast.makeText(activity, data, Toast.LENGTH_LONG).show();
 
-
+        djLayers = new myLayers();
         mStorageManager = (StorageManager)getSystemService(Context.STORAGE_SERVICE);
         mapView = (MapView) findViewById(R.id.mapView);
         json2Geomtry = (Button) findViewById(R.id.json2Geomtry);
@@ -133,14 +145,14 @@ public class map1 extends AppCompatActivity implements View.OnClickListener{
         mPolygonButton = (ImageButton)findViewById(R.id.polygonButton);
         mFreehandLineButton = (ImageButton)findViewById(R.id.freehandLineButton);
         mFreehandPolygonButton = (ImageButton)findViewById(R.id.freehandPolygonButton);
-        showLatLon = (Button) findViewById(R.id.showLatLon);
+
+        my_drawer = (LinearLayout) findViewById(R.id.my_drawer);
 
         editeToolbar =  findViewById(R.id.toolbarInclude);
         myToolbar = (Button) findViewById(R.id.mToolbar);   //工具栏按钮
         mToolbar = (Toolbar) findViewById(R.id.toolbar);    //工具栏
 
         myToolbar.setOnClickListener(this);
-        showLatLon.setOnClickListener(this);
 
         /**
          * 设置地图监听，地图加载完成后触发该事件。新创建一个线程
@@ -151,89 +163,6 @@ public class map1 extends AppCompatActivity implements View.OnClickListener{
                 DismissDialog();
             }
         });
-
-        /**
-         * 对mapView绑定触摸监听事件
-         */
-        mapView.setOnTouchListener(new DefaultMapViewOnTouchListener(this, mapView) {
-
-            /**
-             * 单击mapView触发的事件，弹出对话框显示该点的坐标
-             * 1.将屏幕坐标转换为地图坐标，在进行投影得到地理坐标
-             * 2.创建Callout标注，并设置内容
-             * @param motionEvent
-             * @return
-             */
-            @Override
-            public boolean onSingleTapConfirmed(MotionEvent motionEvent) {
-                if (canSelect) {
-                    // get the point that was clicked and convert it to a point in map coordinates
-                    Point clickPoint = mMapView.screenToLocation(new android.graphics.Point(Math.round(motionEvent.getX()), Math.round(motionEvent.getY())));
-                    int tolerance = 10;
-                    double mapTolerance = tolerance * mMapView.getUnitsPerDensityIndependentPixel();
-                    // create objects required to do a selection with a query
-                    Envelope envelope = new Envelope(clickPoint.getX() - mapTolerance, clickPoint.getY() - mapTolerance, clickPoint.getX() + mapTolerance, clickPoint.getY() + mapTolerance, map.getSpatialReference());
-                    QueryParameters query = new QueryParameters();
-                    query.setGeometry(envelope);
-                    // call select features
-                    final ListenableFuture<FeatureQueryResult> future = featureLayer.selectFeaturesAsync(query, FeatureLayer.SelectionMode.NEW);
-                    // add done loading listener to fire when the selection returns
-                    future.addDoneListener(new Runnable() {
-                        @Override
-                        public void run() {
-                            try {
-                                //call get on the future to get the result
-                                FeatureQueryResult result = future.get();
-                                // create an Iterator
-                                Iterator<Feature> iterator = result.iterator();
-                                Feature feature;
-                                // cycle through selections
-                                int counter = 0;
-                                while (iterator.hasNext()) {
-                                    feature = iterator.next();
-                                    counter++;
-                                    Log.i("dj", "Selection #: " + counter + " Table name: " + feature.getFeatureTable().getTableName());
-                                }
-                                Toast.makeText(getApplicationContext(), counter + " features selected", Toast.LENGTH_SHORT).show();
-                            } catch (Exception e) {
-                                Log.e(getResources().getString(R.string.app_name), "Select feature failed: " + e.getMessage());
-                            }
-                        }
-                    });
-                    return super.onSingleTapConfirmed(motionEvent);
-                }
-                if (isShowLatLon) {
-                    Log.i("dj", "onSingleTapConfirmed: " + motionEvent.toString());
-
-                    // get the point that was clicked and convert it to a point in map coordinates
-                    android.graphics.Point screenPoint = new android.graphics.Point(Math.round(motionEvent.getX()),
-                            Math.round(motionEvent.getY()));
-                    // create a map point from screen point
-                    Point mapPoint = mapView.screenToLocation(screenPoint);
-                    // convert to WGS84 for lat/lon format
-                    Point wgs84Point = (Point) GeometryEngine.project(mapPoint, SpatialReferences.getWgs84());
-                    // create a textview for the callout
-                    TextView calloutContent = new TextView(getApplicationContext());
-                    calloutContent.setTextColor(Color.BLACK);
-                    calloutContent.setSingleLine();
-                    // format coordinates to 4 decimal places
-                    calloutContent.setText("Lat: " + String.format("%.4f", wgs84Point.getY()) +
-                            ", Lon: " + String.format("%.4f", wgs84Point.getX()));
-
-                    // get callout, set content and show
-                    mCallout = mapView.getCallout();
-                    mCallout.setLocation(mapPoint);
-                    mCallout.setContent(calloutContent);
-                    mCallout.show();
-
-                    mapView.setViewpointCenterAsync(mapPoint);  //移动到以该点为中心
-
-                    return true;
-                }
-                return true;
-            }
-        });
-
 
         mDrawerList = (ListView) findViewById(R.id.mymap_navList);
         mDrawerLayout = (DrawerLayout) findViewById(R.id.mymap_drawerLayout);
@@ -258,47 +187,25 @@ public class map1 extends AppCompatActivity implements View.OnClickListener{
 
         json2Geomtry.setOnClickListener(this);
 
-//        // set an on touch listener to listen for click events
-//        mapView.setOnTouchListener(new DefaultMapViewOnTouchListener(this, mapView) {
-//            @Override
-//            public boolean onSingleTapConfirmed(MotionEvent e) {
-//                // get the point that was clicked and convert it to a point in map coordinates
-//                Point clickPoint = mMapView.screenToLocation(new android.graphics.Point(Math.round(e.getX()), Math.round(e.getY())));
-//                int tolerance = 10;
-//                double mapTolerance = tolerance * mMapView.getUnitsPerDensityIndependentPixel();
-//                // create objects required to do a selection with a query
-//                Envelope envelope = new Envelope(clickPoint.getX() - mapTolerance, clickPoint.getY() - mapTolerance, clickPoint.getX() + mapTolerance, clickPoint.getY() + mapTolerance, map.getSpatialReference());
-//                QueryParameters query = new QueryParameters();
-//                query.setGeometry(envelope);
-//                // call select features
-//                final ListenableFuture<FeatureQueryResult> future = featureLayer.selectFeaturesAsync(query, FeatureLayer.SelectionMode.NEW);
-//                // add done loading listener to fire when the selection returns
-//                future.addDoneListener(new Runnable() {
-//                    @Override
-//                    public void run() {
-//                        try {
-//                            //call get on the future to get the result
-//                            FeatureQueryResult result = future.get();
-//                            // create an Iterator
-//                            Iterator<Feature> iterator = result.iterator();
-//                            Feature feature;
-//                            // cycle through selections
-//                            int counter = 0;
-//                            while (iterator.hasNext()){
-//                                feature = iterator.next();
-//                                counter++;
-//                                Log.i("dj", "Selection #: " + counter + " Table name: " + feature.getFeatureTable().getTableName());
-//                            }
-//                            Toast.makeText(getApplicationContext(), counter + " features selected", Toast.LENGTH_SHORT).show();
-//                        } catch (Exception e) {
-//                            Log.e(getResources().getString(R.string.app_name), "Select feature failed: " + e.getMessage());
-//                        }
-//                    }
-//                });
-//                return super.onSingleTapConfirmed(e);
-//            }
-//        });
+        mapViewAction = new myMapViewAction(mapView, activity, new TextView(getApplicationContext()), map);
 
+
+        /**
+         * 折叠菜单
+         */
+        // 获取组件
+        mExpandableListView = (ExpandableListView) findViewById(R.id.expendablelistview);
+        mExpandableListView.setGroupIndicator(null);
+        new extendMenu(activity, mExpandableListView, this);
+
+
+    }
+
+    /**
+     * 添加栅格图层
+     */
+    public void addRaster(){
+        djLayers.loadRaster(mapView, map, getString(R.string.raster_path));
     }
 
     /**
@@ -351,7 +258,8 @@ public class map1 extends AppCompatActivity implements View.OnClickListener{
     private void selectBasemap(int position) {
         // update selected item and title, then close the drawer
         mDrawerList.setItemChecked(position, true);
-        mDrawerLayout.closeDrawer(mDrawerList);
+        closeDrawer();
+
 
         // if-else is used because this sample is used elsewhere as a Library module
         if (position == 0) {
@@ -381,6 +289,9 @@ public class map1 extends AppCompatActivity implements View.OnClickListener{
         }
     }
 
+    public void closeDrawer(){
+        mDrawerLayout.closeDrawer(my_drawer);
+    }
 
     @Override
     protected void onPostCreate(Bundle savedInstanceState) {
@@ -406,27 +317,18 @@ public class map1 extends AppCompatActivity implements View.OnClickListener{
             case R.id.json2Geomtry:
                 createGeomtryFromJson();
                 break;
-            case R.id.showLatLon:
-                edit_showLatLon();
-                break;
         }
     }
 
-    private void edit_showLatLon(){
-        if(isShowLatLon){
-            isShowLatLon = false;
-        }else {
-            isShowLatLon = true;
-        }
-    }
     /**
      * 通过属性表进行查询
      */
-    private void QueryTest(){
+    public void QueryTest(){
         String url = getResources().getString(R.string.wildfire_feature_server);
         myQuery query = new myQuery(mapView, url);
         query.executeQuery("1=1");
     }
+
 
     /**
      * 显示或隐藏菜单栏
@@ -450,7 +352,7 @@ public class map1 extends AppCompatActivity implements View.OnClickListener{
     /**
      * 开始编辑，绘制草图
      */
-    private void startEdit(){
+    public void startEdit(){
         if(editeToolbar.getVisibility()== View.GONE){
             editeToolbar.setVisibility(View.VISIBLE);
             msketchEditor = new mySketchEditor(mapView, editeToolbar, myToolbar, mToolbar);
@@ -469,8 +371,10 @@ public class map1 extends AppCompatActivity implements View.OnClickListener{
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.undo_redo_stop_menu, menu);
+        myMenu = new menuAction(menu, inflater, msketchEditor,this, mapViewAction);
+        myMenu.createMenu();
         return super.onCreateOptionsMenu(menu);
+
     }
 
     /**
@@ -479,33 +383,21 @@ public class map1 extends AppCompatActivity implements View.OnClickListener{
      */
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.undo:
-                msketchEditor.undo();
-                return true;
-            case R.id.redo:
-                msketchEditor.redo();
-                return true;
-            case R.id.stop:
-                msketchEditor.stop();
-                return true;
-            case R.id.start:
-                this.startEdit();
-                return true;
-            case R.id.query:
-                QueryTest();
-                return true;
-            case R.id.addShapefile:
-                new myLayers().featureLayerShapefile(mapView, activity, getString(R.string.shapefile_path));
-                getFeatureLayer();
-                return true;
-            default:
-                return (mDrawerToggle.onOptionsItemSelected(item))||super.onOptionsItemSelected(item);
+        if(myMenu.menuItemSelected(item)){
+            return true;
+        }else {
+            return (mDrawerToggle.onOptionsItemSelected(item))||super.onOptionsItemSelected(item);
         }
+    }
+
+    public void addFeatureLayer(){
+        djLayers.featureLayerShapefile(mapView, activity, getString(R.string.shapefile_path));
+        getFeatureLayer();
     }
 
     private void getFeatureLayer(){
         featureLayer = (FeatureLayer) mapView.getMap().getOperationalLayers().get(0);
+        mapViewAction.setFeatureLayer(featureLayer);
     }
 
     /**
@@ -632,7 +524,6 @@ public class map1 extends AppCompatActivity implements View.OnClickListener{
             dialog.dismiss();
         }
     }
-
 
     @Override
     protected void onPause() {

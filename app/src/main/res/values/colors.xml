@@ -7,4 +7,5 @@
     <color name="material_dark_green">#66CC66</color>
     <color name="toolbar_background">#FF444444</color>
     <color name="colorDivider">#BDBDBD</color>
+    <color name="sblue">#66CDAA</color>
 </resources>

@@ -28,7 +28,19 @@
     <string name="selectFeature">选择要素</string>
 
     <string name="wildfire_feature_server">"http://sampleserver6.arcgisonline.com/arcgis/rest/services/Wildfire/FeatureServer/0"</string>
+    <string name="brest_buildings">
+        "http://tiles.arcgis.com/tiles/P3ePLMYs2RVChkJx/arcgis/rest/services/Buildings_Brest/SceneServer"</string>
     <string name="shapefile_path">/djData/Data/Public_Art.shp</string>
+    <string name="raster_path">/djData/Data/raster-file/Shasta.tif</string>
+    <string name="san_francisco_tpk">/djData/Data/SanFrancisco.tpk</string>
+    <string name="wildfire_sync">"https://sampleserver6.arcgisonline.com/arcgis/rest/services/Sync/WildfireSync/FeatureServer"</string>
+    <string name="wildfire_geodatabase">wildfire.geodatabase</string>
+    <string name="gen_geodatabase_button_text">Generate</string>
+    <string name="progress_starting">Starting</string>
+    <string name="progress_started">Started</string>
+    <string name="progress_fetching">Fetching result</string>
+    <string name="progress_done">Done</string>
+    <string name="file_name"></string>
 
     <string-array name="vector_tiled_types">
         <item>Streets</item>

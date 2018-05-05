@@ -52,7 +52,9 @@
         </receiver>
 
         <activity android:name="com.dj.myChat.Email_test" />
-        <activity android:name="com.dj.djArcMap.myBaseMap"></activity>
+        <activity android:name="com.dj.djArcMap.myBaseMap" />
+        <activity android:name="com.dj.djtest.zhedie" />
+        <activity android:name="com.dj.djArcMap.mySceneView"></activity>
     </application>
 
 </manifest>

@@ -7,9 +7,14 @@ import android.widget.Toast;
 
 import com.esri.arcgisruntime.data.ShapefileFeatureTable;
 import com.esri.arcgisruntime.layers.FeatureLayer;
+import com.esri.arcgisruntime.layers.RasterLayer;
 import com.esri.arcgisruntime.loadable.LoadStatus;
+import com.esri.arcgisruntime.mapping.ArcGISMap;
+import com.esri.arcgisruntime.mapping.Basemap;
 import com.esri.arcgisruntime.mapping.Viewpoint;
 import com.esri.arcgisruntime.mapping.view.MapView;
+import com.esri.arcgisruntime.raster.Raster;
+
 import static com.dj.djArcMap.map1.TAG;
 
 /**
@@ -17,6 +22,11 @@ import static com.dj.djArcMap.map1.TAG;
  */
 
 public class myLayers {
+
+
+    public myLayers(){
+
+    }
 
     /**
      * Creates a ShapefileFeatureTable from a service and, on loading, creates a FeatureLayer and add it to the map.
@@ -48,5 +58,26 @@ public class myLayers {
             }
         });
     }
+
+    /**
+     * Loads Shasta.tif as a Raster and adds it to a new RasterLayer. The RasterLayer is then added
+     * to the map as an operational layer. Map viewpoint is then set based on the Raster's geometry.
+     */
+    public void loadRaster(final MapView mMapView, ArcGISMap map, String raster_path) {
+        // create a raster from a local raster file
+        Raster raster = new Raster( Environment.getExternalStorageDirectory() + "/" + raster_path);
+        // create a raster layer
+        final RasterLayer rasterLayer = new RasterLayer(raster);
+        // add the raster as an operational layer
+        map.getOperationalLayers().add(rasterLayer);
+        // set viewpoint on the raster
+        rasterLayer.addDoneLoadingListener(new Runnable() {
+            @Override
+            public void run() {
+                mMapView.setViewpointGeometryAsync(rasterLayer.getFullExtent(), 50);
+            }
+        });
+    }
+
 
 }
