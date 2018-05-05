@@ -126,7 +126,7 @@ public class MainActivity extends AppCompatActivity {
 
                                     // define the local path where the geodatabase will be stored
                                     final String localGeodatabasePath =
-                                            getCacheDir().toString() + File.separator + getString(R.string.file_name);
+                                            Environment.getExternalStorageDirectory() + getString(R.string.wildfire_geodatabase);
 
                                     // create and start the job
                                     final GenerateGeodatabaseJob generateGeodatabaseJob = geodatabaseSyncTask
