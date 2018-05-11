@@ -36,6 +36,7 @@ import com.dj.myChat.ChatRoom;
 import com.dj.myChat.Email_test;
 import com.dj.myView.RecyclerViewTest;
 import com.dj.tools.BaseActivity;
+import com.dj.tools.djLocation;
 
 public class djtest extends BaseActivity implements View.OnClickListener{
     final String TAG = "dj";
@@ -57,6 +58,7 @@ public class djtest extends BaseActivity implements View.OnClickListener{
     private Button btn_extendListView;
     private Button btn_anthorMap;
     private Button btn_3dMap;
+    private Button btn_location;
     private IntentFilter intentFilter;
     private dj networkChangeReceiver;
     private StorageManager mStorageManager;
@@ -90,6 +92,9 @@ public class djtest extends BaseActivity implements View.OnClickListener{
         btn_extendListView = (Button) findViewById(R.id.btn_extendListView);
         btn_anthorMap = (Button) findViewById(R.id.btn_anthorMap);
         btn_3dMap = (Button) findViewById(R.id.btn_3DMap);
+        btn_location = (Button) findViewById(R.id.btn_myLocation);
+
+        btn_location.setOnClickListener(this);
 
         btn_3dMap.setOnClickListener(this);
 
@@ -221,6 +226,9 @@ public class djtest extends BaseActivity implements View.OnClickListener{
                 break;
             case R.id.btn_3DMap:
                 jumpto(mySceneView.class);
+                break;
+            case R.id.btn_myLocation:
+                jumpto(djLocation.class);
                 break;
         }
     }

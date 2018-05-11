@@ -36,10 +36,6 @@ public class myMapViewAction {
     private boolean canSelect = false;
     private boolean isShowLatLon = false;
 
-    public void setFeatureLayer(FeatureLayer featureLayer) {
-        this.featureLayer = featureLayer;
-    }
-
     private FeatureLayer featureLayer;
     private ArcGISMap map;
 
@@ -153,6 +149,8 @@ public class myMapViewAction {
         return mylistener;
     }
 
-
+    public void setFeatureLayer(FeatureLayer featureLayer) {
+        this.featureLayer = featureLayer;
+    }
 
 }

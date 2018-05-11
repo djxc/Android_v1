@@ -26,6 +26,7 @@
     <string name="addShapefileButtonDescription">addShapefile</string>
     <string name="showLatLon">显示经纬度</string>
     <string name="selectFeature">选择要素</string>
+    <string name="myLocation">定位</string>
 
     <string name="wildfire_feature_server">"http://sampleserver6.arcgisonline.com/arcgis/rest/services/Wildfire/FeatureServer/0"</string>
     <string name="brest_buildings">

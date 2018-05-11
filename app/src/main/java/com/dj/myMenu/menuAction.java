@@ -10,6 +10,7 @@ import com.dj.djArcMap.map1;
 import com.dj.djArcMap.myLayers;
 import com.dj.djArcMap.myMapViewAction;
 import com.dj.djArcMap.mySketchEditor;
+import com.dj.tools.MyLocation;
 import com.example.administrator.mymap.R;
 
 /**
@@ -17,19 +18,16 @@ import com.example.administrator.mymap.R;
  */
 
 public class menuAction {
-    private MenuItem addFeatureLayer;
     private MenuItem showLatLon;
     private Menu menu;
     private MenuInflater inflater;
     private mySketchEditor msketchEditor;
-    private Activity activity;
     private myMapViewAction mapViewAction;
     private map1 mymap;
 
-    public menuAction(Menu menu, MenuInflater inflater, mySketchEditor msketchEditor, map1 mymap, myMapViewAction mapViewAction){
+    public menuAction(Menu menu, MenuInflater inflater, map1 mymap, myMapViewAction mapViewAction){
         this.menu = menu;
         this.inflater = inflater;
-        this.msketchEditor = msketchEditor;
         this.mymap = mymap;
         this.mapViewAction = mapViewAction;
     }
@@ -71,7 +69,6 @@ public class menuAction {
         area.add(0, 0x214, 0, "杭州").setCheckable(true);
         return menu;
     }
-
 
     /**
      * 每个菜单项点击事件
@@ -173,6 +170,10 @@ public class menuAction {
                 return true;
         }
         return false;
+    }
+
+    public void setMsketchEditor(mySketchEditor msketchEditor) {
+        this.msketchEditor = msketchEditor;
     }
 
     /**

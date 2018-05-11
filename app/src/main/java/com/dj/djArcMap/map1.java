@@ -33,10 +33,12 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.dj.DataOperator.SDCard;
+import com.dj.TianDiTu.TianDiTuMethodClass;
 import com.dj.djtest.MyAdapter;
 import com.dj.djtest.zhedie;
 import com.dj.myMenu.extendMenu;
 import com.dj.myMenu.menuAction;
+import com.dj.tools.MyLocation;
 import com.esri.arcgisruntime.concurrent.ListenableFuture;
 import com.esri.arcgisruntime.data.Feature;
 import com.esri.arcgisruntime.data.FeatureQueryResult;
@@ -51,9 +53,11 @@ import com.esri.arcgisruntime.geometry.Polygon;
 import com.esri.arcgisruntime.geometry.Polyline;
 import com.esri.arcgisruntime.geometry.SpatialReferences;
 import com.esri.arcgisruntime.layers.FeatureLayer;
+import com.esri.arcgisruntime.layers.WebTiledLayer;
 import com.esri.arcgisruntime.loadable.LoadStatus;
 import com.esri.arcgisruntime.mapping.ArcGISMap;
 import com.esri.arcgisruntime.mapping.Basemap;
+import com.esri.arcgisruntime.mapping.Viewpoint;
 import com.esri.arcgisruntime.mapping.view.Callout;
 import com.esri.arcgisruntime.mapping.view.DefaultMapViewOnTouchListener;
 import com.esri.arcgisruntime.mapping.view.Graphic;
@@ -96,6 +100,7 @@ public class map1 extends AppCompatActivity implements View.OnClickListener{
 
     private StorageManager mStorageManager;
     private Button json2Geomtry;
+    private Button btn_mapLocation;
 
     private FloatingActionButton floatingActionButton;
 
@@ -110,11 +115,11 @@ public class map1 extends AppCompatActivity implements View.OnClickListener{
     private DrawerLayout mDrawerLayout;
     private String mActivityTitle;
     private String[] mNavigationDrawerItemTitles;
-
+    private MyLocation myLocation = null;
     private myMapViewAction mapViewAction;
     private menuAction myMenu = null;
     private myLayers djLayers = null;
-
+    private boolean canLocation = false;
     private ExpandableListView mExpandableListView = null;
 
 
@@ -129,13 +134,22 @@ public class map1 extends AppCompatActivity implements View.OnClickListener{
         String data = intent.getStringExtra("data");
         Toast.makeText(activity, data, Toast.LENGTH_LONG).show();
 
+
+        WebTiledLayer webTiledLayer = TianDiTuMethodClass.CreateTianDiTuTiledLayer(TianDiTuMethodClass.LayerType.TIANDITU_VECTOR_MERCATOR);
+        Basemap tdtBasemap =new Basemap(webTiledLayer);
+        WebTiledLayer webTiledLayer1 = TianDiTuMethodClass.CreateTianDiTuTiledLayer(TianDiTuMethodClass.LayerType.TIANDITU_VECTOR_ANNOTATION_CHINESE_MERCATOR);
+        tdtBasemap.getBaseLayers().add(webTiledLayer1);
+        mapView = (MapView) findViewById(R.id.mapView);
+        map = new ArcGISMap(tdtBasemap);
+        map.setInitialViewpoint(new Viewpoint(34.056295, 117.195800,70000));
+        mapView.setMap(map);
+
         djLayers = new myLayers();
         mStorageManager = (StorageManager)getSystemService(Context.STORAGE_SERVICE);
-        mapView = (MapView) findViewById(R.id.mapView);
+
         json2Geomtry = (Button) findViewById(R.id.json2Geomtry);
+        btn_mapLocation = (Button) findViewById(R.id.btn_mapLocation);
         floatingActionButton = (FloatingActionButton) findViewById(R.id.fab);
-        map = new ArcGISMap(Basemap.Type.DARK_GRAY_CANVAS_VECTOR, 34.056295, 117.195800, 10);
-        mapView.setMap(map);
         showDialog();
 
         // get buttons from layouts
@@ -170,9 +184,6 @@ public class map1 extends AppCompatActivity implements View.OnClickListener{
         mActivityTitle = getTitle().toString();
         mNavigationDrawerItemTitles = getResources().getStringArray(R.array.vector_tiled_types);
         actionBar = getSupportActionBar();
-//        changeBaseMap changeBMap = new changeBaseMap(activity, actionBar, mDrawerLayout, mDrawerList, mActivityTitle, mNavigationDrawerItemTitles);
-//        changeBMap.addDrawerItems();
-//        changeBMap.setupDrawer();
         addDrawerItems();
         setupDrawer();
 
@@ -186,6 +197,7 @@ public class map1 extends AppCompatActivity implements View.OnClickListener{
         floatingActionButton.setOnClickListener(this);
 
         json2Geomtry.setOnClickListener(this);
+        btn_mapLocation.setOnClickListener(this);
 
         mapViewAction = new myMapViewAction(mapView, activity, new TextView(getApplicationContext()), map);
 
@@ -317,8 +329,19 @@ public class map1 extends AppCompatActivity implements View.OnClickListener{
             case R.id.json2Geomtry:
                 createGeomtryFromJson();
                 break;
+            case R.id.btn_mapLocation:
+                if(canLocation){
+                    canLocation = false;
+                    myLocation = null;
+                }else {
+                    canLocation = true;
+                    myLocation = new MyLocation(activity, mapView);
+                }
+                break;
         }
     }
+
+
 
     /**
      * 通过属性表进行查询
@@ -356,6 +379,7 @@ public class map1 extends AppCompatActivity implements View.OnClickListener{
         if(editeToolbar.getVisibility()== View.GONE){
             editeToolbar.setVisibility(View.VISIBLE);
             msketchEditor = new mySketchEditor(mapView, editeToolbar, myToolbar, mToolbar);
+            myMenu.setMsketchEditor(msketchEditor);
             msketchEditor.setButtons(mPointButton, mMultiPointButton, mPolylineButton, mPolygonButton, mFreehandLineButton, mFreehandPolygonButton);
         }else{
             editeToolbar.setVisibility(View.GONE);
@@ -371,7 +395,7 @@ public class map1 extends AppCompatActivity implements View.OnClickListener{
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
-        myMenu = new menuAction(menu, inflater, msketchEditor,this, mapViewAction);
+        myMenu = new menuAction(menu, inflater,this, mapViewAction);
         myMenu.createMenu();
         return super.onCreateOptionsMenu(menu);
 
@@ -457,7 +481,7 @@ public class map1 extends AppCompatActivity implements View.OnClickListener{
     private Point createPoint() {
         //[DocRef: Name=Create Point, Category=Fundamentals, Topic=Geometries]
         // create a Point using x,y coordinates and a SpatialReference
-        Point pt = new Point(34.056295, -117.195800, SpatialReferences.getWgs84());
+        Point pt = new Point(-117.195800, 34.056295, SpatialReferences.getWgs84());
         //[DocRef: END]
 
         return pt;

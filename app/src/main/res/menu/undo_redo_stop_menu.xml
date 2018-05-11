@@ -49,4 +49,10 @@
         android:title="@string/selectFeature"
         app:showAsAction="ifRoom|withText"/>
 
+    <item
+        android:id="@+id/myLocation"
+        android:icon="@mipmap/ic_menu_stop"
+        android:title="@string/myLocation"
+        app:showAsAction="ifRoom|withText"/>
+
 </menu>

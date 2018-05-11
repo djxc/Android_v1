@@ -163,6 +163,13 @@
             android:text="3DMap"
             android:textSize="18px"/>
 
+        <Button
+            android:id="@+id/btn_myLocation"
+            android:layout_width="50dp"
+            android:layout_height="30dp"
+            android:padding="0dp"
+            android:text="定位"
+            android:textSize="18px"/>
     </LinearLayout>
 
 </LinearLayout>
